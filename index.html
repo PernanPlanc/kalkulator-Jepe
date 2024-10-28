@@ -37,28 +37,67 @@
             text-align: center;
         }
         .telegram-logo {
-            width: 30px; /* Ukuran logo Telegram */
-            height: auto; /* Pertahankan rasio aspeknya */
+            width: 30px;
+            height: auto;
+        }
+        .custom-mcap {
+            display: none;
+            margin-top: 10px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #34495e;
         }
     </style>
 </head>
 <body>
-
-    <!-- Logo Komunitas -->
-    <img src="logo.png" alt="Logo Komunitas" class="logo"> <!-- Ganti dengan nama file logo Anda -->
+    <img src="logo.png" alt="Logo Komunitas" class="logo">
 
     <h1>Prediksi Harga Coin Grass</h1>
-    <p>Pilih koin pembanding untuk menghitung prediksi harga koin Grass dengan total supply 1 miliar token.</p>
+    <p>Pilih koin pembanding atau masukkan market cap custom untuk menghitung prediksi harga koin Grass dengan total supply 1 miliar token.</p>
 
-    <label for="comparisonCoin">Pilih Koin Pembanding:</label>
-    <select id="comparisonCoin">
-        <option value="not">Not (MCap: $713.39M)</option>
-        <option value="dogs">Dogs (MCap: $315.44M)</option>
-        <option value="cats">Cats (MCap: $26M)</option>
-    </select>
+    <div class="input-group">
+        <label for="marketCapType">Pilih Jenis Market Cap:</label>
+        <select id="marketCapType" onchange="toggleMarketCapInput()">
+            <option value="preset">Pilih Koin Pembanding</option>
+            <option value="custom">Custom Market Cap</option>
+        </select>
+    </div>
 
-    <label for="coinAmount">Masukkan Jumlah Coin Grass yang Anda Miliki:</label>
-    <input type="number" id="coinAmount" placeholder="Misalnya, 1000" min="0" step="1">
+    <div id="presetCoins" class="input-group">
+        <label for="comparisonCoin">Pilih Koin Pembanding:</label>
+        <select id="comparisonCoin">
+            <option value="not">Not (MCap: $713.39M)</option>
+            <option value="dogs">Dogs (MCap: $315.44M)</option>
+            <option value="cats">Cats (MCap: $26M)</option>
+        </select>
+    </div>
+
+    <div id="customMcap" class="custom-mcap input-group">
+        <label for="customMarketCap">Masukkan Market Cap Custom (USD):</label>
+        <input type="number" id="customMarketCap" placeholder="Contoh: 1000000 untuk $1M" min="0">
+    </div>
+
+    <div class="input-group">
+        <label for="coinAmount">Masukkan Jumlah Coin Grass yang Anda Miliki:</label>
+        <input type="number" id="coinAmount" placeholder="Misalnya, 1000" min="0" step="1">
+    </div>
 
     <button onclick="calculateGrassPrice()">Hitung Prediksi Harga Koin Grass</button>
 
@@ -66,48 +105,69 @@
 
     <div class="footer">
         <a href="https://t.me/plancnewss" target="_blank">
-            <img src="telegram-logo.png" alt="Telegram" class="telegram-logo"> <!-- Ganti dengan nama file logo Telegram Anda -->
+            <img src="telegram-logo.png" alt="Telegram" class="telegram-logo">
         </a>
     </div>
 
     <script>
-        // Data perbandingan market cap
         const coins = {
-            not: { marketCap: 713390000 }, // Market cap dalam USD
+            not: { marketCap: 713390000 },
             dogs: { marketCap: 315440000 },
             cats: { marketCap: 26000000 }
         };
 
-        // Fungsi untuk menghitung prediksi harga koin Grass
-        function calculateGrassPrice() {
-            const selectedCoin = document.getElementById("comparisonCoin").value;
-            const comparisonCoin = coins[selectedCoin];
-            const grassSupply = 1000000000;  // Total supply koin Grass (1 miliar)
-            const coinAmount = parseFloat(document.getElementById("coinAmount").value); // Convert to float
+        function toggleMarketCapInput() {
+            const marketCapType = document.getElementById("marketCapType").value;
+            const presetCoins = document.getElementById("presetCoins");
+            const customMcap = document.getElementById("customMcap");
 
-            // Validasi input jumlah coin
+            if (marketCapType === "custom") {
+                presetCoins.style.display = "none";
+                customMcap.style.display = "block";
+            } else {
+                presetCoins.style.display = "block";
+                customMcap.style.display = "none";
+            }
+        }
+
+        function calculateGrassPrice() {
+            const marketCapType = document.getElementById("marketCapType").value;
+            let marketCap;
+
+            if (marketCapType === "custom") {
+                marketCap = parseFloat(document.getElementById("customMarketCap").value);
+                if (isNaN(marketCap) || marketCap <= 0) {
+                    alert("Masukkan market cap yang valid.");
+                    return;
+                }
+            } else {
+                const selectedCoin = document.getElementById("comparisonCoin").value;
+                marketCap = coins[selectedCoin].marketCap;
+            }
+
+            const grassSupply = 1000000000;
+            const coinAmount = parseFloat(document.getElementById("coinAmount").value);
+
             if (isNaN(coinAmount) || coinAmount <= 0) {
                 alert("Masukkan jumlah koin Grass yang valid.");
                 return;
             }
 
-            // Hitung harga per koin Grass berdasarkan market cap dari koin pembanding
-            const pricePerCoinGrass = comparisonCoin.marketCap / grassSupply;
-
-            // Hitung nilai total koin Grass yang dimiliki pengguna
+            const pricePerCoinGrass = marketCap / grassSupply;
             const totalValue = pricePerCoinGrass * coinAmount;
 
-            // Tampilkan hasil
             const resultDiv = document.getElementById("result");
             resultDiv.style.display = "block";
             resultDiv.innerHTML = `
                 <strong>Prediksi Harga Koin Grass:</strong><br>
-                Berdasarkan koin <strong>${selectedCoin.toUpperCase()}</strong> dengan Market Cap <strong>$${comparisonCoin.marketCap.toLocaleString()}</strong><br><br>
+                ${marketCapType === "custom" 
+                    ? `Berdasarkan Market Cap Custom: <strong>$${marketCap.toLocaleString()}</strong>`
+                    : `Berdasarkan koin <strong>${document.getElementById("comparisonCoin").value.toUpperCase()}</strong> dengan Market Cap <strong>$${marketCap.toLocaleString()}</strong>`
+                }<br><br>
                 <strong>Harga Per Koin Grass:</strong> $${pricePerCoinGrass.toFixed(8)}<br>
                 <strong>Nilai Total Koin Grass Anda:</strong> $${totalValue.toLocaleString()}
             `;
         }
     </script>
-
 </body>
 </html>
