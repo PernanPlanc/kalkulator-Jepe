@@ -34,9 +34,9 @@
 
     <label for="comparisonCoin">Pilih Koin Pembanding:</label>
     <select id="comparisonCoin">
-        <option value="not">Not (MCap: $713.39M, Supply: 102M)</option>
-        <option value="dogs">Dogs (MCap: $315.44M, Supply: 500M)</option>
-        <option value="cats">Cats (MCap: $26M, Supply: 600M)</option>
+        <option value="not">Not (MCap: $713.39M)</option>
+        <option value="dogs">Dogs (MCap: $315.44M)</option>
+        <option value="cats">Cats (MCap: $26M)</option>
     </select>
 
     <label for="coinAmount">Masukkan Jumlah Coin Grass yang Anda Miliki:</label>
@@ -47,23 +47,17 @@
     <div id="result" class="result" style="display: none;"></div>
 
     <script>
-        // Data perbandingan market cap dan supply
+        // Data perbandingan market cap
         const coins = {
-            not: { marketCap: 713390000, supply: 102000000 },
-            dogs: { marketCap: 315440000, supply: 500000000 },
-            cats: { marketCap: 26000000, supply: 600000000 }
+            not: { marketCap: 713390000 }, // Tidak memerlukan supply untuk perhitungan ini
+            dogs: { marketCap: 315440000 },
+            cats: { marketCap: 26000000 }
         };
-
-        // Fungsi untuk menghitung harga koin berdasarkan market cap dan supply
-        function calculateCoinPrice(marketCap, supply) {
-            return marketCap / supply;
-        }
 
         // Fungsi untuk menghitung prediksi harga koin Grass
         function calculateGrassPrice() {
             const selectedCoin = document.getElementById("comparisonCoin").value;
             const comparisonCoin = coins[selectedCoin];
-            const grassSupply = 1000000000;  // Total supply koin Grass (1 miliar)
             const coinAmount = parseFloat(document.getElementById("coinAmount").value); // Convert to float
 
             // Validasi input jumlah coin
@@ -72,24 +66,16 @@
                 return;
             }
 
-            // Hitung harga per koin dari koin pembanding
-            const pricePerCoin = calculateCoinPrice(comparisonCoin.marketCap, comparisonCoin.supply);
-
-            // Proyeksi market cap Grass menggunakan harga per koin pembanding
-            const projectedMarketCap = pricePerCoin * grassSupply;
-
-            // Hitung nilai total koin yang dimiliki pengguna
-            const totalValue = pricePerCoin * coinAmount;
+            // Menghitung nilai total koin Grass berdasarkan market cap koin pembanding
+            const totalValue = comparisonCoin.marketCap * coinAmount;
 
             // Tampilkan hasil
             const resultDiv = document.getElementById("result");
             resultDiv.style.display = "block";
             resultDiv.innerHTML = `
-                <strong>Prediksi Harga Koin Grass:</strong><br>
-                Berdasarkan koin <strong>${selectedCoin.toUpperCase()}</strong> dengan Market Cap <strong>$${comparisonCoin.marketCap.toLocaleString()}</strong> dan Supply <strong>${comparisonCoin.supply.toLocaleString()}</strong><br><br>
-                <strong>Harga Per Koin Grass:</strong> $${pricePerCoin.toFixed(8)}<br>
-                <strong>Market Cap Grass (dengan supply 1 miliar):</strong> $${projectedMarketCap.toLocaleString()}<br><br>
-                <strong>Nilai Total Koin Grass Anda:</strong> $${totalValue.toFixed(2)}
+                <strong>Prediksi Nilai Total Koin Grass Anda:</strong><br>
+                Berdasarkan koin <strong>${selectedCoin.toUpperCase()}</strong> dengan Market Cap <strong>$${comparisonCoin.marketCap.toLocaleString()}</strong><br><br>
+                <strong>Nilai Total Koin Grass Anda:</strong> $${totalValue.toLocaleString()}
             `;
         }
     </script>
