@@ -49,7 +49,7 @@
     <script>
         // Data perbandingan market cap
         const coins = {
-            not: { marketCap: 713390000 }, // Tidak memerlukan supply untuk perhitungan ini
+            not: { marketCap: 713390000 }, // Market cap dalam USD
             dogs: { marketCap: 315440000 },
             cats: { marketCap: 26000000 }
         };
@@ -58,6 +58,7 @@
         function calculateGrassPrice() {
             const selectedCoin = document.getElementById("comparisonCoin").value;
             const comparisonCoin = coins[selectedCoin];
+            const grassSupply = 1000000000;  // Total supply koin Grass (1 miliar)
             const coinAmount = parseFloat(document.getElementById("coinAmount").value); // Convert to float
 
             // Validasi input jumlah coin
@@ -66,15 +67,19 @@
                 return;
             }
 
-            // Menghitung nilai total koin Grass berdasarkan market cap koin pembanding
-            const totalValue = comparisonCoin.marketCap * coinAmount;
+            // Hitung harga per koin Grass berdasarkan market cap dari koin pembanding
+            const pricePerCoinGrass = comparisonCoin.marketCap / grassSupply;
+
+            // Hitung nilai total koin Grass yang dimiliki pengguna
+            const totalValue = pricePerCoinGrass * coinAmount;
 
             // Tampilkan hasil
             const resultDiv = document.getElementById("result");
             resultDiv.style.display = "block";
             resultDiv.innerHTML = `
-                <strong>Prediksi Nilai Total Koin Grass Anda:</strong><br>
+                <strong>Prediksi Harga Koin Grass:</strong><br>
                 Berdasarkan koin <strong>${selectedCoin.toUpperCase()}</strong> dengan Market Cap <strong>$${comparisonCoin.marketCap.toLocaleString()}</strong><br><br>
+                <strong>Harga Per Koin Grass:</strong> $${pricePerCoinGrass.toFixed(8)}<br>
                 <strong>Nilai Total Koin Grass Anda:</strong> $${totalValue.toLocaleString()}
             `;
         }
