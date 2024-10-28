@@ -27,9 +27,18 @@
         }
         .logo {
             display: block;
-            margin: 0 auto 20px; /* Center the logo and add margin below */
-            max-width: 100%; /* Ensure the logo fits within the container */
-            height: auto; /* Maintain aspect ratio */
+            margin: 0 auto 20px;
+            max-width: 150px;
+            width: 100%;
+            height: auto;
+        }
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .telegram-logo {
+            width: 30px; /* Ukuran logo Telegram */
+            height: auto; /* Pertahankan rasio aspeknya */
         }
     </style>
 </head>
@@ -54,6 +63,12 @@
     <button onclick="calculateGrassPrice()">Hitung Prediksi Harga Koin Grass</button>
 
     <div id="result" class="result" style="display: none;"></div>
+
+    <div class="footer">
+        <a href="https://t.me/plancnewss" target="_blank">
+            <img src="telegram-logo.png" alt="Telegram" class="telegram-logo"> <!-- Ganti dengan nama file logo Telegram Anda -->
+        </a>
+    </div>
 
     <script>
         // Data perbandingan market cap
