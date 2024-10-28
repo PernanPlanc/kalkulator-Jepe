@@ -49,9 +49,9 @@
     <script>
         // Data perbandingan market cap dan supply
         const coins = {
-            not: { marketCap: 713390000, supply: 102000000000 },
-            dogs: { marketCap: 315440000, supply: 500000000000 },
-            cats: { marketCap: 26000000, supply: 600000000000 }
+            not: { marketCap: 713390000, supply: 102000000 },
+            dogs: { marketCap: 315440000, supply: 500000000 },
+            cats: { marketCap: 26000000, supply: 600000000 }
         };
 
         // Fungsi untuk menghitung harga koin berdasarkan market cap dan supply
@@ -64,10 +64,10 @@
             const selectedCoin = document.getElementById("comparisonCoin").value;
             const comparisonCoin = coins[selectedCoin];
             const grassSupply = 1000000000;  // Total supply koin Grass (1 miliar)
-            const coinAmount = document.getElementById("coinAmount").value;
+            const coinAmount = parseFloat(document.getElementById("coinAmount").value); // Convert to float
 
             // Validasi input jumlah coin
-            if (!coinAmount || coinAmount <= 0) {
+            if (isNaN(coinAmount) || coinAmount <= 0) {
                 alert("Masukkan jumlah koin Grass yang valid.");
                 return;
             }
